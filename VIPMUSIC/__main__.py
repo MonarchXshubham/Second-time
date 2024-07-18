@@ -3,6 +3,7 @@ import importlib
 from sys import argv
 from pyrogram import idle
 from pytgcalls.exceptions import NoActiveGroupCall
+from flask import Flask
 
 import config
 from VIPMUSIC import LOGGER, app, userbot
@@ -11,9 +12,14 @@ from VIPMUSIC.misc import sudo
 from VIPMUSIC.plugins import ALL_MODULES
 from VIPMUSIC.utils.database import get_banned_users, get_gbanned
 from config import BANNED_USERS
-
 from VIPMUSIC.plugins.tools.clone import restart_bots
 
+# Create Flask app
+flask_app = Flask(__name__)
+
+@flask_app.route('/')
+def index():
+    return "VIPMUSIC Bot is running!"
 
 async def init():
     if (
@@ -40,7 +46,7 @@ async def init():
         pass
     await app.start()
     for all_module in ALL_MODULES:
-        importlib.import_module("VIPMUSIC.plugins" + all_module)
+        importlib.import_module("VIPMUSIC.plugins." + all_module)
     LOGGER("VIPMUSIC.plugins").info("𝐀𝐥𝐥 𝐅𝐞𝐚𝐭𝐮𝐫𝐞𝐬 𝐋𝐨𝐚𝐝𝐞𝐝 𝐁𝐚𝐛𝐲🥳...")
 
     await userbot.start()
@@ -48,17 +54,26 @@ async def init():
     await VIP.start()
     await VIP.decorators()
     await restart_bots()
-    LOGGER("VIPMUSIC").info("╔═════ஜ۩۞۩ஜ════╗\n  ♨️𝗠𝗔𝗗𝗘 𝗕𝗬 𝐑𝐀𝐉𝐏𝐔𝐓 𝐒𝐇𝐈𝐕♨️\n╚═════ஜ۩۞۩ஜ════╝")
+    LOGGER("VIPMUSIC").info("╔═════ஜ۩۞۩ஜ════╗\n  ♨️𝗠𝗔𝗗𝗘 𝗕𝗬 𝗜𝗦𝗧𝗞𝗛𝗔𝗥♨️\n╚═════ஜ۩۞۩ஜ════╝")
     await idle()
 
     await app.stop()
     await userbot.stop()
 
     LOGGER("VIPMUSIC").info(
-        "                 ╔═════ஜ۩۞۩ஜ════╗\n  ♨️𝗠𝗔𝗗𝗘 𝗕𝗬 𝐑𝐀𝐉𝐏𝐔𝐓 𝐒𝐇𝐈𝐕♨️\n╚═════ஜ۩۞۩ஜ════╝"
+        "                 ╔═════ஜ۩۞۩ஜ════╗\n  ♨️𝗠𝗔𝗗𝗘 𝗕𝗬 𝗜𝗦𝗧𝗞𝗛𝗔𝗥♨️\n╚═════ஜ۩۞۩ஜ════╝"
     )
 
+def main():
+    loop = asyncio.get_event_loop()
+    loop.create_task(init())
+
+    # Run Flask app in a separate thread
+    from threading import Thread
+    flask_thread = Thread(target=lambda: flask_app.run(host="0.0.0.0", port=8080))
+    flask_thread.start()
+
+    loop.run_forever()
 
 if __name__ == "__main__":
-
-    asyncio.get_event_loop().run_until_complete(init())
+    main()
