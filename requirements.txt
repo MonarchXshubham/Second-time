@@ -49,6 +49,7 @@ gpytranslate
 openai==0.28.0
 mpv
 moviepy
+Flask==2.3.3
 git+https://github.com/KurimuzonAkuma/pyrogram@dev
 git+https://github.com/yt-dlp/yt-dlp
 git+https://github.com/joetats/youtube_search@master
